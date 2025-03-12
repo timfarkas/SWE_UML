@@ -33,7 +33,7 @@ class Ticket {
 
 }
 
-User "0..*" --> "0..*" Ticket : submits >
+Ticket "0..*" <- "0..*" User : < submits
 PageAdmin "0..*" --> "0..*" Ticket : resolves >
 
 
