@@ -5,29 +5,63 @@ abstract class User {
     Abstract base class User
 }
 
+class PageAdmin {
+
+}
+
 class Volunteer {
     Single person, may be associated with SMB
 }
 
 class SMB {
-    SMB Admin Account
+    
 }
 
 class Charity {
+    aka 'organizer'
 }
 
 
-Volunteer --|> User
+Volunteer ---|> User
 SMB --l|> User
-Charity --|> User
+Charity ---|> User
+PageAdmin --|> User
+
+
+' Site maintenance related classes
+class Ticket {
+
+}
+
+User "0..*" --> "0..*" Ticket : submits >
+PageAdmin "0..*" --> "0..*" Ticket : resolves >
+
+
+
+' User details related classes
+class VolunteerInfo {
+    tracks interests, qualifications & impact
+}
+
+class SMBInfo {
+}
+
+class CharityInfo {
+}
+
+VolunteerInfo "1" -- "1" Volunteer : < has
+SMB "1" -- "1" SMBInfo : has >
+Charity "1" -- "1" CharityInfo : has >
+
 
 ' Opportunity related classes
 class Opportunity {
-    Volunteering Opportunity
+    Volunteering Opportunity, event or longer-term
 }
 class OpportunityRegistry {
-    connects Volunteers to Opportunities
+    connects volunteers & opportunities, includes rating
 }
+
 
 ' Partnership class
 class Partnership {
@@ -54,11 +88,6 @@ class CharityWatchlistEntry {
 
 
 
-' Opportunity relationships
-Opportunity "0..*" -- "1" Charity : < creates
-Volunteer "0..*" --- "0..*" OpportunityRegistry : registers through >
-OpportunityRegistry "0..*" -- "0..*" Opportunity : connects to >
-
 
 ' Partnership relationships
 Partnership "0..*" -- "1" SMB : involves >
@@ -68,6 +97,12 @@ Partnership "0..*" -- "1" Charity : involves >
 SMBAssociation "0..*" -- "1" SMB : owned by >
 SMBAssociation "1" -- "0..*" Volunteer : includes >
 
+' Opportunity relationships
+Opportunity "0..*" -- "1" Charity : < creates
+Volunteer "0..*" --- "0..*" OpportunityRegistry : registers through >
+OpportunityRegistry "0..*" -- "0..*" Opportunity : connects to >
+
+
 ' Opportunity Watchlist relationships
 Volunteer "1" -- "0..1" OpportunityWatchlist : has >
 SMB "1" -- "0..1" OpportunityWatchlist : has >
@@ -76,7 +111,7 @@ OpportunityWatchlistEntry "0..*" -- "1" Opportunity : references >
 
 ' Charity Watchlist relationships
 Volunteer "1" -- "0..1" CharityWatchlist : has >
-SMB "1" -- "0..1" CharityWatchlist : has >
+SMB "1" --- "0..1" CharityWatchlist : has >
 CharityWatchlist "1" -- "0..*" CharityWatchlistEntry : contains >
 CharityWatchlistEntry "0..*" -- "1" Charity : references >
 
