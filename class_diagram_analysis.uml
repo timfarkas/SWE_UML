@@ -2,12 +2,15 @@
 
 ' User classes
 abstract class User {
+    Abstract base class User
 }
 
 class Volunteer {
+    Single person, may be associated with SMB
 }
 
 class SMB {
+    SMB Admin Account
 }
 
 class Charity {
@@ -20,6 +23,10 @@ Charity --|> User
 
 ' Opportunity related classes
 class Opportunity {
+    Volunteering Opportunity
+}
+class OpportunityRegistry {
+    connects Volunteers to Opportunities
 }
 
 ' Partnership class
@@ -29,6 +36,8 @@ class Partnership {
 ' SMB Association class
 class SMBAssociation {
 }
+
+
 
 ' Watchlist classes
 class OpportunityWatchlist {
@@ -47,6 +56,9 @@ class CharityWatchlistEntry {
 
 ' Opportunity relationships
 Opportunity "0..*" -- "1" Charity : < creates
+Volunteer "0..*" --- "0..*" OpportunityRegistry : registers through >
+OpportunityRegistry "0..*" -- "0..*" Opportunity : connects to >
+
 
 ' Partnership relationships
 Partnership "0..*" -- "1" SMB : involves >
