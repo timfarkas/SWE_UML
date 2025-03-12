@@ -1,0 +1,49 @@
+@startuml NextJS Application Architecture
+
+' Main component representing the NextJS application
+package "Application" as Application {
+    component ApplicationCore
+}
+
+package "Front End" as FrontEnd{
+    component ChakraUI 
+    interface IFrontEndComponents
+}
+
+package "Back End" as BackEnd{
+    
+    component "Render Hosting" as Render{
+        interface "IDatabaseORM" as IDatabaseORM
+        component "Prisma ORM" as Prisma 
+        interface "IDatabase" as IDatabaseLowLevel
+        component "PgSQGL Database" as DatabaseBackend
+        component "NextJS Server" as NextJSServer 
+        interface IHosting
+        
+    }
+    component "Cloudflare R2" as R2 {
+      interface "IFileStorage" as IFileStorage
+        component "File Storage" as Storage
+    }
+}
+
+
+ChakraUI - IFrontEndComponents
+ApplicationCore - IFrontEndComponents
+
+' Define relationships with proper UML notation
+ApplicationCore - ApplicationCore : interacts
+
+ApplicationCore -- IDatabaseORM
+Prisma -- IDatabaseLowLevel
+IDatabaseLowLevel - DatabaseBackend
+IDatabaseORM -- Prisma
+
+IHosting -- NextJSServer 
+IHosting - ApplicationCore
+
+
+IFileStorage -- Storage
+ApplicationCore -- IFileStorage
+
+@enduml
