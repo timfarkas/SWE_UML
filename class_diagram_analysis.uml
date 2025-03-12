@@ -1,0 +1,71 @@
+@startuml Volunteer Platform Class Diagram
+
+' User classes
+abstract class User {
+}
+
+class Volunteer {
+}
+
+class SMB {
+}
+
+class Charity {
+}
+
+
+Volunteer --|> User
+SMB --l|> User
+Charity --|> User
+
+' Opportunity related classes
+class Opportunity {
+}
+
+' Partnership class
+class Partnership {
+}
+
+' SMB Association class
+class SMBAssociation {
+}
+
+' Watchlist classes
+class OpportunityWatchlist {
+}
+
+class OpportunityWatchlistEntry {
+}
+
+class CharityWatchlist {
+}
+
+class CharityWatchlistEntry {
+}
+
+
+
+' Opportunity relationships
+Opportunity "0..*" -- "1" Charity : < creates
+
+' Partnership relationships
+Partnership "0..*" -- "1" SMB : involves >
+Partnership "0..*" -- "1" Charity : involves >
+
+' SMB Association relationships
+SMBAssociation "0..*" -- "1" SMB : owned by >
+SMBAssociation "1" -- "0..*" Volunteer : includes >
+
+' Opportunity Watchlist relationships
+Volunteer "1" -- "0..1" OpportunityWatchlist : has >
+SMB "1" -- "0..1" OpportunityWatchlist : has >
+OpportunityWatchlist "1" -- "0..*" OpportunityWatchlistEntry : contains >
+OpportunityWatchlistEntry "0..*" -- "1" Opportunity : references >
+
+' Charity Watchlist relationships
+Volunteer "1" -- "0..1" CharityWatchlist : has >
+SMB "1" -- "0..1" CharityWatchlist : has >
+CharityWatchlist "1" -- "0..*" CharityWatchlistEntry : contains >
+CharityWatchlistEntry "0..*" -- "1" Charity : references >
+
+@enduml
