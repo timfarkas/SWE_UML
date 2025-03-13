@@ -1,0 +1,346 @@
+@startuml SkillBridge: Tech Skills Volunteering Platform
+
+abstract class User {
+  -userID: int
+  -username: string
+  -password: string
+  -email: string
+  -technicalSkills: List<Skill>
+  +login(): bool
+  +changePassword(newPassword: string): void
+  +recoverPassword(): void
+  +register(type: string): void
+  +addSkill(skill: Skill): void
+  +removeSkill(skill: Skill): void
+}
+
+class Volunteer {
+  -volunteerID: int
+  -historyOfHelp: string
+  -impactMetrics: string
+  -skillLevels: Map<Skill, Level>
+  -yearsExperience: Map<Skill, int>
+  -projectPortfolio: List<Project>
+  +requestSignUpForOpportunity(opportunity: Opportunity): SignUpRequest
+  +cancelVolunteering(opportunity: Opportunity): void
+  +uploadHistory(history: string): void
+  +viewDashboard(): DashboardData
+  +updateSkillLevel(skill: Skill, level: Level): void
+  +addProject(project: Project): void
+}
+
+class SMB {
+  -smbID: int
+  -verificationStatus: string
+  -companyRegistrationNumber: string
+  -requiredSkills: List<Skill>
+  -techStack: List<Technology>
+  +createPartnership(charity: Charity): Partnership
+  +manageAssociations(): void
+  +viewDashboard(): DashboardData
+  +postTechOpportunity(opportunity: TechOpportunity): void
+}
+
+class Charity {
+  -charityID: int
+  -verificationStatus: string
+  -charityLicenseNumber: string
+  -techNeeds: List<TechNeed>
+  +createOpportunity(): Opportunity
+  +editOpportunity(opportunity: Opportunity): void
+  +deleteOpportunity(opportunity: Opportunity): void
+  +acceptVolunteerRequest(request: SignUpRequest): void
+  +declineVolunteerRequest(request: SignUpRequest): void
+  +cancelVolunteerAid(volunteer: Volunteer, opportunity: Opportunity): void
+  +viewDashboard(): DashboardData
+  +addTechNeed(techNeed: TechNeed): void
+}
+
+class PageAdmin {
+  +resolveTicket(ticket: Ticket): void
+  +manageSystem(): void
+  +manageTechCategories(): void
+}
+
+class VolunteerInfo {
+  -interests: string
+  -qualifications: string
+  -impactHistory: string
+  -techSpecializations: List<TechSpecialization>
+  -certifications: List<TechCertification>
+}
+
+class SMBInfo {
+  -businessType: string
+  -companySize: string
+  -industryFocus: string
+  -techFocus: List<TechnologyArea>
+}
+
+class CharityInfo {
+  -causeType: string
+  -targetBeneficiaries: string
+  -organizationalSize: string
+  -digitalMaturity: string
+}
+
+class Opportunity {
+  -opportunityID: int
+  -title: string
+  -description: string
+  -date: datetime
+  -location: string
+  -status: string
+  -requiredTechSkills: List<Skill>
+  -skillLevel: SkillLevel
+  -duration: string
+  -projectType: string
+  -remoteOption: bool
+}
+
+class TechOpportunity {
+  -technologyStack: List<Technology>
+  -developmentMethodology: string
+  -teamSize: int
+  -estimatedTimeCommitment: string
+  -learningOutcomes: List<string>
+}
+
+class TechNeed {
+  -category: string
+  -urgency: int
+  -description: string
+  -requiredExpertiseLevel: SkillLevel
+}
+
+class Skill {
+  -skillID: int
+  -name: string
+  -category: SkillCategory
+  -description: string
+}
+
+enum SkillCategory {
+  PROGRAMMING_LANGUAGE
+  FRAMEWORK
+  DATABASE
+  CLOUD_PLATFORM
+  DEVOPS
+  UI_UX
+  PROJECT_MANAGEMENT
+  CYBERSECURITY
+  DATA_SCIENCE
+  OTHER
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+class Project {
+  -projectID: int
+  -title: string
+  -description: string
+  -technologiesUsed: List<Technology>
+  -url: string
+  -completionDate: date
+}
+
+class Technology {
+  -technologyID: int
+  -name: string
+  -version: string
+  -category: string
+}
+
+class OpportunityRegistry {
+  -registryID: int
+  -rating: float
+  -skillsMatched: int
+  -skillGapScore: float
+  +connectVolunteerToOpportunity(): void
+  +calculateSkillMatch(volunteer: Volunteer, opportunity: Opportunity): float
+}
+
+class TechnologyArea {
+  -areaID: int
+  -name: string
+  -emergingTrends: List<string>
+}
+
+class TechCertification {
+  -certificationID: int
+  -name: string
+  -issuer: string
+  -dateObtained: date
+  -expiryDate: date
+  -verificationURL: string
+}
+
+class Partnership {
+  -partnershipID: int
+  -startDate: datetime
+  -endDate: datetime
+  -status: string
+  -techFocus: List<TechnologyArea>
+  +formalize(): void
+}
+
+class SMBAssociation {
+  -associationID: int
+  -startDate: datetime
+  -skillContribution: List<Skill>
+  +addVolunteer(volunteer: Volunteer): void
+  +removeVolunteer(volunteer: Volunteer): void
+}
+
+class SkillMatchingEngine {
+  +findMatchingOpportunities(volunteer: Volunteer): List<Opportunity>
+  +findQualifiedVolunteers(opportunity: Opportunity): List<Volunteer>
+  +calculateMatchScore(volunteer: Volunteer, opportunity: Opportunity): float
+}
+
+class TechSpecialization {
+  -specializationID: int
+  -area: string
+  -description: string
+  -relatedSkills: List<Skill>
+}
+
+' Existing classes that remain unchanged
+class OpportunityWatchlist {
+  -watchlistID: int
+}
+
+class OpportunityWatchlistEntry {
+  -entryID: int
+  -dateAdded: datetime
+}
+
+class CharityWatchlist {
+  -watchlistID: int
+}
+
+class CharityWatchlistEntry {
+  -entryID: int
+  -dateAdded: datetime
+}
+
+class SignUpRequest {
+  -requestID: int
+  -status: string
+  -skillsOffered: List<Skill>
+  +triggerPartnershipEmail(): void
+}
+
+class Notification {
+  -notificationID: int
+  -message: string
+  -type: string
+  -timestamp: datetime
+  +send(): void
+}
+
+class Ticket {
+  -ticketID: int
+  -description: string
+  -status: string
+  -techRelated: boolean
+  +submit(): void
+}
+
+class DashboardData {
+  -dashboardID: int
+  -userMetrics: Map<string, string>
+  -activeOpportunities: List<Opportunity>
+  -completedProjects: int
+  -impactSummary: string
+  +generateReport(): void
+}
+
+' Inheritance relationships
+User <|-- Volunteer
+User <|-- SMB
+User <|-- Charity
+User <|-- PageAdmin
+
+' User info relationships
+Volunteer "1" -- "1" VolunteerInfo
+SMB "1" -- "1" SMBInfo
+Charity "1" -- "1" CharityInfo
+
+' Skill relationships
+User "1" -- "0..*" Skill : has >
+Opportunity "1" -- "0..*" Skill : requires >
+Volunteer "1" -- "0..*" Project : showcases >
+
+' Opportunity relationships
+Charity "1" -- "0..*" Opportunity
+Opportunity <|-- TechOpportunity
+Charity "1" -- "0..*" TechNeed
+Volunteer "0..*" -- "0..*" OpportunityRegistry
+OpportunityRegistry "0..*" -- "0..*" Opportunity
+SkillMatchingEngine "1" -- "0..*" Volunteer : matches >
+SkillMatchingEngine "1" -- "0..*" Opportunity : matches >
+
+' Partnership relationships
+Partnership "0..*" -- "1" SMB
+Partnership "0..*" -- "1" Charity
+
+' SMB Association relationships
+SMBAssociation "0..*" -- "1" SMB
+SMBAssociation "1" -- "0..*" Volunteer
+
+' Opportunity Watchlist relationships
+Volunteer "1" -- "0..1" OpportunityWatchlist
+SMB "1" -- "0..1" OpportunityWatchlist
+OpportunityWatchlist "1" -- "0..*" OpportunityWatchlistEntry
+OpportunityWatchlistEntry "0..*" -- "1" Opportunity
+
+' Charity Watchlist relationships
+Volunteer "1" -- "0..1" CharityWatchlist
+SMB "1" -- "0..1" CharityWatchlist
+CharityWatchlist "1" -- "0..*" CharityWatchlistEntry
+CharityWatchlistEntry "0..*" -- "1" Charity
+
+' Tickets
+User "0..*" -- "0..*" Ticket : submits >
+PageAdmin "0..*" -- "0..*" Ticket : < resolves
+
+' SignUpRequest
+Volunteer "1" -- "0..*" SignUpRequest
+Opportunity "1" -- "0..*" SignUpRequest
+
+' Notification
+Notification "0..*" -- "1" User
+
+' Add missing relationships
+VolunteerInfo "1" -- "0..*" TechSpecialization : has >
+VolunteerInfo "1" -- "0..*" TechCertification : possesses >
+SMBInfo "1" -- "0..*" TechnologyArea : focuses on >
+Partnership "1" -- "0..*" TechnologyArea : addresses >
+Skill "0..*" -- "1" SkillCategory : categorized as >
+Level "1" *-- "0..*" Volunteer : used by > 
+Project "0..*" -- "0..*" Technology : uses >
+Technology "0..*" -- "1" TechnologyArea : belongs to >
+
+' Dashboard relationships
+Volunteer "1" -- "0..1" DashboardData : views >
+SMB "1" -- "0..1" DashboardData : views > 
+Charity "1" -- "0..1" DashboardData : views >
+
+' Fix references to Level vs SkillLevel
+class Level {
+  -levelID: int
+  -name: string
+  -description: string
+  -requiredExperience: int
+}
+
+' Connect TechNeeds with Technology
+TechNeed "0..*" -- "0..*" Technology : requires >
+
+@enduml
