@@ -1,49 +1,65 @@
-@startuml NextJS Application Architecture
-
-' Main component representing the NextJS application
+@startuml
+' Main Application Layer
 package "Application" as Application {
     component ApplicationCore
 }
 
-package "Front End" as FrontEnd{
+' Frontend Layer
+package "Front End" as FrontEnd {
     component ChakraUI 
     interface IFrontEndComponents
+    component "Next.js UI" as NextJSUI
 }
 
-package "Back End" as BackEnd{
-    
-    component "Render Hosting" as Render{
-        interface "IDatabaseORM" as IDatabaseORM
-        component "Prisma ORM" as Prisma 
-        interface "IDatabase" as IDatabaseLowLevel
-        component "PgSQGL Database" as DatabaseBackend
-        component "NextJS Server" as NextJSServer 
-        interface IHosting
-        
-    }
-    component "Cloudflare R2" as R2 {
-      interface "IFileStorage" as IFileStorage
-        component "File Storage" as Storage
-    }
+' Backend Layer with Business Logic
+package "Back End" as BackEnd {
+    component "NextJS Server" as NextJSServer
+    interface IHosting
+    component "User Management Service" as UserService
+    component "Opportunity Management Service" as OpportunityService
+    component "Skill Matching Engine" as SkillMatching
+    component "Watchlist & Notifications Service" as WatchlistService
 }
 
+' Database Layer
+package "Database" as DatabaseLayer {
+    interface "IDatabaseORM" as IDatabaseORM
+    component "Prisma ORM" as Prisma
+    interface "IDatabase" as IDatabaseLowLevel
+    component "PostgreSQL Database" as DatabaseBackend
+}
 
+' File Storage
+package "Cloud Storage" as StorageLayer {
+    interface "IFileStorage" as IFileStorage
+    component "Cloudflare R2 Storage" as Storage
+}
+
+' Frontend Connections
 ChakraUI - IFrontEndComponents
+NextJSUI - IFrontEndComponents
 ApplicationCore - IFrontEndComponents
+ApplicationCore - NextJSUI : "Renders UI"
 
-' Define relationships with proper UML notation
-ApplicationCore - ApplicationCore : interacts
+' Backend Service Interactions
+ApplicationCore -- IHosting
+IHosting -- NextJSServer
+NextJSServer -- UserService
+NextJSServer -- OpportunityService
+NextJSServer -- SkillMatching
+NextJSServer -- WatchlistService
 
-ApplicationCore -- IDatabaseORM
-Prisma -- IDatabaseLowLevel
-IDatabaseLowLevel - DatabaseBackend
+' Database Interactions
+UserService -- IDatabaseORM
+OpportunityService -- IDatabaseORM
+SkillMatching -- IDatabaseORM
+WatchlistService -- IDatabaseORM
 IDatabaseORM -- Prisma
+Prisma -- IDatabaseLowLevel
+IDatabaseLowLevel -- DatabaseBackend
 
-IHosting -- NextJSServer 
-IHosting - ApplicationCore
-
-
+' File Storage
 IFileStorage -- Storage
 ApplicationCore -- IFileStorage
-
+NextJSServer -- IFileStorage
 @enduml
