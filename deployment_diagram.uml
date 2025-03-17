@@ -1,0 +1,86 @@
+@startuml
+
+left to right direction
+
+node "Client" {
+    [Web Browser]
+    [iOS App]
+    [Android App]
+}
+
+node "Cloud Infrastructure" {
+    node "Load Balancer" {
+        [NGINX / AWS ALB]
+    }
+    
+    node "Web Server" {
+        [Frontend (Next.js UI)]
+        [Chakra UI Components]
+        [Backend (Next.js Server)]
+    }
+    
+    node "Backend Services" {
+        [User Management Service]
+        [Opportunity Management Service]
+        [Skill Matching Engine]
+        [Watchlist & Notifications Service]
+    }
+    
+    node "Storage & CDN" {
+        [Cloudflare R2 Storage]
+        [CDN (Cloudflare, AWS CloudFront)]
+    }
+    
+    database "Database Server" {
+        [PostgreSQL Database]
+        [Prisma ORM]
+    }
+    
+    node "Authentication Service" {
+        [Third-Party Verification API]
+        [2FA Service]
+    }
+    
+    node "Email & Notification Service" {
+        [SMTP Email Service]
+        [Push Notification Service]
+    }
+}
+
+node "External Services" {
+    [DDOS Protection & Security Firewall]
+    [Hosting Provider (AWS, Azure, GCP)]
+    [GDPR Compliance Service]
+}
+
+' Connections
+[Web Browser] --> [Frontend (Next.js UI)]
+[iOS App] --> [Frontend (Next.js UI)]
+[Android App] --> [Frontend (Next.js UI)]
+
+[Frontend (Next.js UI)] --> [Load Balancer]
+[Load Balancer] --> [Backend (Next.js Server)]
+
+[Backend (Next.js Server)] --> [User Management Service]
+[Backend (Next.js Server)] --> [Opportunity Management Service]
+[Backend (Next.js Server)] --> [Skill Matching Engine]
+[Backend (Next.js Server)] --> [Watchlist & Notifications Service]
+
+[User Management Service] --> [PostgreSQL Database]
+[Opportunity Management Service] --> [PostgreSQL Database]
+[Skill Matching Engine] --> [PostgreSQL Database]
+[Watchlist & Notifications Service] --> [PostgreSQL Database]
+
+[User Management Service] --> [Third-Party Verification API]
+[User Management Service] --> [2FA Service]
+
+[Watchlist & Notifications Service] --> [SMTP Email Service]
+[Watchlist & Notifications Service] --> [Push Notification Service]
+
+[Backend (Next.js Server)] --> [Cloudflare R2 Storage]
+[Cloudflare R2 Storage] --> [CDN (Cloudflare, AWS CloudFront)]
+
+[Backend (Next.js Server)] --> [DDOS Protection & Security Firewall]
+[Backend (Next.js Server)] --> [GDPR Compliance Service]
+
+@enduml
