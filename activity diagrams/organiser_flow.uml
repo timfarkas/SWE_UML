@@ -1,0 +1,37 @@
+@startuml
+start
+
+:Organiser accesses platform;
+:Authenticate via Authentication Service;
+if (Authentication successful?) then (Yes)
+    :Display organiser dashboard;
+else (No)
+    :Show login error;
+    stop
+endif
+
+:Organiser creates a new opportunity;
+:Enter details (title, description, skills required, dates);
+:Save opportunity in Opportunity Management Service;
+:Publish opportunity;
+
+:Receive volunteer applications;
+:Check eligibility via Skill Matching Engine;
+if (Match found?) then (Yes)
+    :Review volunteer applications;
+    :Accept or reject volunteers;
+    if (Accepted?) then (Yes)
+        :Notify volunteer of acceptance;
+    else (No)
+        :Notify volunteer of rejection;
+    endif
+else (No)
+    :Display no matching volunteers message;
+endif
+
+:Monitor registered volunteers;
+:Confirm volunteer attendance after the event;
+:Rate and review volunteers;
+
+stop
+@enduml
