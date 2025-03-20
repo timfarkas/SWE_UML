@@ -1,0 +1,41 @@
+@startuml
+title Skill Matching Process: Volunteer Assignment for Existing Opportunities
+
+
+actor "Volunteer" as Volunteer #lightgreen
+participant "App" as App #white
+participant "SkillMatchingEngine" as MatchEngine #orange
+database "Database" as DB #gray
+actor "Organiser" as Organiser #lightblue
+
+' Volunteer browses opportunity
+Volunteer -> App: Access platform
+App -> DB: Fetch volunteer profile
+DB --> App: Return profile with skills
+App --> Volunteer: Display volunteer dashboard
+Volunteer -> App: Browse opportunities
+App -> MatchEngine: Request personalized opportunities
+
+' Matching 
+MatchEngine -> DB: Query opportunities and skill requirements
+MatchEngine -> MatchEngine: Apply matching algorithm
+MatchEngine -> MatchEngine: Calculate compatibility scores
+MatchEngine -> MatchEngine: Filter by skill match
+MatchEngine -> MatchEngine: Cache result
+
+MatchEngine --> App: Return ranked opportunities
+App --> Volunteer: Display opportunities
+
+' Volunteer Application 
+Volunteer -> App: Apply for opportunity
+App -> DB: Store application
+DB --> App: Confirm
+App -> MatchEngine: Request skill match analysis
+
+' Application Match Report
+MatchEngine -> MatchEngine: Yield fetched skill match score
+MatchEngine -> MatchEngine: Generate match report
+MatchEngine --> App: Return match assessment
+App -> Organiser: Send application notification with match details
+
+@enduml

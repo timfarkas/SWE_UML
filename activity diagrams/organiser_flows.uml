@@ -1,0 +1,47 @@
+@startuml
+title Organiser Flows
+start
+:Organiser accesses platform;
+:Authenticate via Authentication Service;
+while (Organiser dashboard)
+
+fork
+    :Create opportunity;
+    :Opportunity Creation Flow;
+fork again 
+    :View impact metrics;
+fork again 
+    :View created opportunities;
+    split
+        :Click on opportunity;
+            split 
+                :Edit information;
+                :Publish changes;
+            split again
+                :Back;
+            end split
+    split again
+        :Back;
+    end split
+fork again 
+    :View associated volunteers;
+     split 
+        :Click on volunteer;
+            split 
+                :Open chat;
+                :Chat;
+                detach
+            split again
+                :Submit volunteer review;
+            split again 
+                :Remove from opportunity;
+            end split
+    split again
+        :Back;
+    end split
+end merge
+endwhile
+-[hidden]->
+detach
+
+@enduml
