@@ -262,13 +262,13 @@ class DashboardData {
 }
 
 ' Inheritance relationships
-User <|-- Volunteer
-User <|-- SMB
+User <|-r- Volunteer
+User <|-r- SMB
 User <|-- Charity
 User <|-- PageAdmin
 
 ' User info relationships
-Volunteer "1" -- "1" VolunteerInfo
+Volunteer "1" -d- "1" VolunteerInfo
 SMB "1" -- "1" SMBInfo
 Charity "1" -- "1" CharityInfo
 
@@ -280,11 +280,11 @@ Volunteer "1" -- "0..*" Project : showcases >
 ' Opportunity relationships
 Charity "1" -- "0..*" Opportunity
 Opportunity <|-- TechOpportunity
-Charity "1" -- "0..*" TechNeed
-Volunteer "0..*" -- "0..*" OpportunityRegistry
+Charity "1" -u- "0..*" TechNeed
+Volunteer "0..*" --- "0..*" OpportunityRegistry
 OpportunityRegistry "0..*" -- "0..*" Opportunity
 SkillMatchingEngine "1" -- "0..*" Volunteer : matches >
-SkillMatchingEngine "1" -- "0..*" Opportunity : matches >
+SkillMatchingEngine "1" --- "0..*" Opportunity : matches >
 
 ' Partnership relationships
 Partnership "0..*" -- "1" SMB
@@ -296,7 +296,7 @@ SMBAssociation "1" -- "0..*" Volunteer
 
 ' Opportunity Watchlist relationships
 Volunteer "1" -- "0..1" OpportunityWatchlist
-SMB "1" -- "0..1" OpportunityWatchlist
+SMB "1" -d- "0..1" OpportunityWatchlist
 OpportunityWatchlist "1" -- "0..*" OpportunityWatchlistEntry
 OpportunityWatchlistEntry "0..*" -- "1" Opportunity
 
