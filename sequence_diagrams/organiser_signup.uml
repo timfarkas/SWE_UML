@@ -1,0 +1,42 @@
+@startuml
+title Organiser Signup & Authentication
+
+actor "Organiser" as User #orange
+participant "Frontend" as Frontend #lightgreen
+participant "Authentication System" as Auth #pink
+participant "Database" as DB
+
+User -> Frontend: Access login page
+Frontend -> Auth: Forward login request
+Auth -> DB: Check credentials
+
+alt Account exists
+    DB --> Auth: Return account data
+    Auth --> Frontend: Authentication successful
+    Frontend --> User: Display organiser dashboard
+    
+else No account
+    DB --> Auth: No account found
+    Auth --> Frontend: Authentication failed
+    Frontend --> User: Show sign-up form
+    
+    loop until valid email
+        User -> Frontend: Enter e-mail
+        User -> Frontend: Enter organiser data
+        Frontend -> Auth: Submit data
+        Auth -> Auth: Verify e-mail format
+        alt Invalid email format
+            Auth --> Frontend: Invalid email format
+            Frontend --> User: Display warning
+            User -> Frontend: Re-enter e-mail
+        end
+    end
+    
+    Auth -> DB: Create account
+    DB --> Auth: Account created
+    Auth --> Frontend: Account creation successful
+    Frontend --> User: Display welcome page
+    Frontend --> User: Redirect to organiser dashboard
+end
+
+@enduml

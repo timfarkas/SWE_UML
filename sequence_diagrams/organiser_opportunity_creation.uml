@@ -1,0 +1,55 @@
+@startuml
+title Organiser Opportunity Creation
+actor Organiser #lightblue
+participant Frontend as App #lightgreen
+participant "Authentication Service" as Auth #pink
+participant "Opportunity Database" as OppDB
+participant "Skill Repository" as SkillRepo
+participant "Notification Service" as Notify
+
+Organiser -> App: Access platform
+App -> Auth: Authenticate organiser
+Auth --> App: Authentication result
+
+alt Authentication successful
+    App --> Organiser: Display organiser dashboard
+    
+    Organiser -> App: Select "Create New Opportunity"
+    App --> Organiser: Display opportunity creation form
+    
+    Organiser -> App: Enter opportunity details (title, description)
+    Organiser -> App: Specify location and duration
+    Organiser -> App: Select category and cause
+    
+    App -> SkillRepo: Fetch available skills
+    SkillRepo --> App: Return skill options
+    App --> Organiser: Display skill selection interface
+    Organiser -> App: Select required skills
+    
+    Organiser -> App: Set capacity and deadline
+    Organiser -> App: Define additional requirements
+    
+    Organiser -> App: Submit opportunity
+    
+    App -> OppDB: Store opportunity details
+    OppDB --> App: Confirm storage
+    
+    App -> Notify: Prepare notifications
+    Notify -> Notify: Match opportunity with interested volunteers
+    
+    App --> Organiser: Display confirmation
+    App --> Organiser: Show opportunity management options
+    
+    note right of Organiser
+      Opportunity management includes:
+      - Edit details
+      - Review applications
+      - Close opportunity
+      - Export volunteer list
+    end note
+    
+else Authentication failed
+    App --> Organiser: Show login error
+end
+
+@enduml

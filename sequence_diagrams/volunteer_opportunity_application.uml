@@ -1,0 +1,47 @@
+@startuml
+actor Volunteer
+participant App
+participant "Authentication Service" as Auth
+participant "Skill Matching Engine" as SkillMatch
+actor Organiser
+
+Volunteer -> App: Access platform
+App -> Auth: Authenticate volunteer
+Auth --> App: Authentication result
+
+alt Authentication successful
+    App --> Volunteer: Display volunteer dashboard
+    
+    Volunteer -> App: Browse opportunities
+    Volunteer -> App: Apply filters (location, category, availability)
+    Volunteer -> App: Select opportunity
+    
+    App -> SkillMatch: Check eligibility
+    SkillMatch --> App: Eligibility result
+    
+    alt Match found
+        App --> Volunteer: Confirm eligibility
+        Volunteer -> App: Apply to opportunity
+        Volunteer -> App: Enter optional information
+        App -> App: Store application
+        App -> Organiser: Inform about application
+        
+        Organiser -> Organiser: Evaluate match
+        Organiser -> App: Make approval decision
+        
+        alt Approved
+            App --> Volunteer: Inform of approval
+            App --> Volunteer: Display next steps
+            Volunteer -> Organiser: Attend opportunity
+            Organiser -> App: Confirm attendance
+        else Not approved
+            App --> Volunteer: Inform of rejection
+        end
+    else No match found
+        App --> Volunteer: Display eligibility failure message
+    end
+else Authentication failed
+    App --> Volunteer: Show login error
+end
+
+@enduml

@@ -1,0 +1,77 @@
+@startuml
+title SMB/Volunteer Signup & Authentication
+
+actor "SMB/Volunteer" as User #orange
+participant "Front-end" as Frontend #lightgreen
+participant "Auth System" as Auth #pink
+participant "Database" as DB
+actor "Admin" as Admin
+
+User -> Frontend: Access login page
+Frontend -> Auth: Forward login request
+Auth -> DB: Check credentials
+
+alt Account exists
+    DB --> Auth: Return account data
+    Auth --> Frontend: Authentication successful
+    Frontend -->O User: Display volunteer dashboard
+    
+else No account
+    DB --> Auth: No account found
+    Auth --> Frontend: Authentication failed
+    Frontend --> User: Show sign-up form
+    
+    loop until valid email
+        User -> Frontend: Enter e-mail
+        User -> Frontend: Enter individual data
+        Frontend -> Auth: Submit data
+        Auth -> Auth: Verify e-mail format
+        alt Invalid email format
+            Auth --> Frontend: Invalid email format
+            Frontend --> User: Display warning
+            User -> Frontend: Re-enter e-mail
+        end
+    end
+    
+    Auth -> Auth: Generate confirmation token
+    Auth -> DB: Store token
+    Auth -> Auth: Send confirmation email
+    Auth --> Frontend: Email sent
+    Frontend --> User: Prompt to check inbox
+    
+    User -> Auth: Click confirmation link
+    Auth -> DB: Verify token
+    
+    Auth -> DB: Check if email is associated with SMB
+    DB --> Auth: Return association status
+    
+    alt Associated SMB exists
+        Auth -> DB: Check if user has white-listed address
+        DB --> Auth: Return white-list status
+        
+        alt No white-listed address
+            Auth --> Frontend: Not on whitelist
+            Frontend -->O Admin: Notify site administrator
+        else Has white-listed address
+            Auth --> Frontend: Approved
+            Frontend -> Auth: Create account
+            Auth -> DB: Store account data
+            DB --> Auth: Account created
+            Auth --> Frontend: Account creation successful
+            Frontend ->o User: Display volunteer dashboard welcome page 
+        end
+    else No associated SMB
+        Auth --> Frontend: New SMB required
+        Frontend --> User: Prompt for SMB Admin role
+        User -> Frontend: Enter SMB data
+        Frontend -> Auth: Submit SMB data
+        Auth -> DB: Create SMB record
+        DB --> Auth: SMB created
+        Auth -> DB: Create account with SMB admin role
+        DB --> Auth: Account created
+        Auth --> Frontend: Account creation successful
+        Frontend ->o User: Display volunteer dashboard welcome page 
+    end
+end
+
+@enduml

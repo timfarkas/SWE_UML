@@ -1,0 +1,38 @@
+@startuml 
+title Opportunity Lifecycle
+[*] --> Draft
+Draft --> Published : Organizer publishes
+Published --> Closed : Deadline passed/\nManually closed
+Published --> InProgress : Volunteers assigned
+InProgress --> Completed : Work finished
+InProgress --> Cancelled : Cancelled by organizer
+Completed --> [*]
+Cancelled --> [*]
+Closed --> [*]
+
+state Draft {
+  [*] --> BasicInfo
+  BasicInfo -r-> SkillsRequired : Add skills
+  SkillsRequired -r> ReviewDraft : Complete details
+  ReviewDraft --> [*]
+}
+
+state Published {
+  [*] --> OpenForApplications
+  OpenForApplications -r-> ReviewingApplications : Applications received
+  ReviewingApplications -r-> VolunteersSelected : Select volunteers
+  VolunteersSelected --> [*]
+}
+
+state InProgress {
+  [*] --> Ongoing
+  Ongoing -r-> FinalReview : Project nearing completion
+  FinalReview --> [*]
+}
+
+state Completed {
+  [*] --> FeedbackCollection
+  FeedbackCollection -r-> ImpactMeasurement
+  ImpactMeasurement --> [*]
+}
+@enduml

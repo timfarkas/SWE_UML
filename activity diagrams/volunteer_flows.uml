@@ -1,0 +1,54 @@
+@startuml
+title Volunteer Flows
+start
+:Volunteer accesses platform;
+:Authenticate via Authentication Service;
+while (Volunteer dashboard)
+
+fork
+    :Browse opportunities;
+    split 
+        :Apply for Opportunity;
+    split again
+        :Add Opportunity to Watchlist;
+    split again
+        :Back;
+    end split
+fork again
+    :View my applications;
+    split
+        :Click on application;
+        split
+            :View status;
+        split again
+            :Withdraw application;
+        split again
+            :Contact organiser;
+            :Chat;
+            detach
+        end split
+    split again
+        :Back;
+    end split
+fork again
+    :View my watchlist;
+    split
+        :Click on saved opportunity;
+        split
+            :Apply for opportunity;
+        split again
+            :Remove from watchlist;
+        split again
+            :Back;
+        end split
+    split again
+        :Back;
+    end split
+fork again
+    :View impact metrics;
+end merge
+endwhile
+-[hidden]->
+detach
+
+@enduml
