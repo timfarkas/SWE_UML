@@ -1,4 +1,5 @@
-@startuml Volunteer Platform Class Diagram
+@startuml Domain Model Class Diagram
+title Domain Model
 
 ' User classes
 abstract class User {
@@ -41,10 +42,6 @@ class Opportunity {
     Volunteering Opportunity, event or longer-term
 }
 
-class OpportunityRegistry {
-    connects volunteers & opportunities, includes rating
-}
-
 
 
 ' SMB Association class
@@ -61,14 +58,24 @@ class OpportunityWatchlistEntry {
 }
 
 
+class Rating {
+   Allows personal and skill-specific feedback
+}
+
+' Rating relationships
+Rating "0..*" -- "1" Volunteer : rates >
+Rating "0..*" -- "1" Organiser : rates >
+Volunteer "0..*" --> "0..*" Rating : provides >
+Organiser "0..*" --> "0..*" Rating : provides >
+
+
 ' SMB Association relationships
 SMBAssociation "0..*" -- "1" SMB : owned by >
 SMBAssociation "1" -- "0..*" Volunteer : includes >
 
 ' Opportunity relationships
 Opportunity "0..*" -- "1" Organiser : < creates
-Volunteer "1" --- "0..*" OpportunityRegistry : connects to >
-OpportunityRegistry "0..*" -- "1" Opportunity : connects to >
+Volunteer "0..*" -- "1" Opportunity : connects to >
 
 
 ' Opportunity Watchlist relationships
