@@ -1,229 +1,79 @@
-@startuml
+@startuml Volunteer Platform Class Diagram
 
-' Core User-related classes
+' User classes
 abstract class User {
-    +userID
-    +username
-    +password
-    +email
-    +technicalSkills
-    +login()
-    +register()
-    +changePassword()
-    +recoverPassword()
-    +addSkill()
-    +removeSkill()
-}
-
-class Volunteer {
-    +volunteerID
-    +historyOfHelp
-    +impactMetrics
-    +skillLevels
-    +yearsExperience
-    +projectPortfolio
-    +requestSignUpForOpportunity()
-    +cancelVolunteering()
-    +uploadHistory()
-    +viewDashboard()
-    +updateSkillLevel()
-    +addProject()
-}
-
-class SMB {
-    +smbID
-    +verificationStatus
-    +companyRegistrationNumber
-    +requiredSkills
-    +techStack
-    +createPartnership()
-    +manageAssociations()
-    +viewDashboard()
-    +postTechOpportunity()
-}
-
-class Charity {
-    +charityID
-    +verificationStatus
-    +charityLicenseNumber
-    +techNeeds
-    +createOpportunity()
-    +editOpportunity()
-    +deleteOpportunity()
-    +acceptVolunteerRequest()
-    +declineVolunteerRequest()
-    +cancelVolunteerAid()
-    +viewDashboard()
-    +addTechNeed()
+    Abstract base class User
 }
 
 class PageAdmin {
-    +resolveTicket()
-    +manageSystem()
-    +manageTechCategories()
+
 }
 
+class Volunteer {
+    Single person, may be associated with SMB
+}
+
+
+class Organiser {
+    aka 'Organiser'
+}
+
+
+Volunteer --|> User
+Volunteer "1" -u-> "0..1" SMB : registers > 
+
+Organiser --|> User
+PageAdmin -|> User
+
+
+' Site maintenance related classes
+class Ticket {
+
+}
+
+Ticket "0..*" <- "0..*" User : < submits
+PageAdmin "0..*" --> "0..*" Ticket : resolves >
+
+
+
+' Opportunity related classes
 class Opportunity {
-    +opportunityID
-    +title
-    +description
-    +date
-    +location
-    +status
-    +requiredTechSkills
-    +skillLevel
-    +duration
-    +projectType
-    +remoteOption
-}
-
-class TechOpportunity {
-    +technologyStack
-    +developmentMethodology
-    +teamSize
-    +estimatedTimeCommitment
-    +learningOutcomes
-}
-
-class TechNeed {
-    +category
-    +urgency
-    +description
-    +requiredExpertiseLevel
-}
-
-class Skill {
-    +skillID
-    +name
-    +category
-    +description
-}
-
-class Project {
-    +projectID
-    +title
-    +description
-    +technologiesUsed
-    +url
-    +completionDate
-}
-
-class Technology {
-    +technologyID
-    +name
-    +version
-    +category
+    Volunteering Opportunity, event or longer-term
 }
 
 class OpportunityRegistry {
-    +registryID
-    +rating
-    +skillsMatched
-    +skillGapScore
-    +connectVolunteerToOpportunity()
-    +calculateSkillMatch()
+    connects volunteers & opportunities, includes rating
 }
 
-class SkillMatchingEngine {
-    +findMatchingOpportunities()
-    +findQualifiedVolunteers()
-    +calculateMatchScore()
-}
 
-class TechSpecialization {
-    +specializationID
-    +area
-    +description
-    +relatedSkills
-}
 
-class TechCertification {
-    +certificationID
-    +name
-    +issuer
-    +dateObtained
-    +expiryDate
-    +verificationURL
-}
-
-class Partnership {
-    +partnershipID
-    +startDate
-    +endDate
-    +status
-    +techFocus
-    +formalize()
-}
-
+' SMB Association class
 class SMBAssociation {
-    +associationID
-    +startDate
-    +skillContribution
-    +addVolunteer()
-    +removeVolunteer()
 }
 
-class Notification {
-    +notificationID
-    +message
-    +type
-    +timestamp
-    +send()
+
+
+' Watchlist classes
+class OpportunityWatchlist {
 }
 
-class Ticket {
-    +ticketID
-    +description
-    +status
-    +techRelated
-    +submit()
+class OpportunityWatchlistEntry {
 }
 
-class DashboardData {
-    +dashboardID
-    +userMetrics
-    +activeOpportunities
-    +completedProjects
-    +impactSummary
-    +generateReport()
-}
 
-' Relationships restored and clarified
-User --|> Volunteer
-User --|> SMB
-User --|> Charity
-User --|> PageAdmin
+' SMB Association relationships
+SMBAssociation "0..*" -- "1" SMB : owned by >
+SMBAssociation "1" -- "0..*" Volunteer : includes >
 
-Volunteer -- OpportunityRegistry : "Tracks participation"
-Volunteer -- SkillMatchingEngine : "Matches skills"
-Volunteer -- Project : "Has projects"
-Volunteer -- Notification : "Receives notifications"
-Volunteer -- DashboardData : "Views stats"
-Volunteer -- TechSpecialization : "Focuses on specialization"
-Volunteer -- TechCertification : "Earns certifications"
+' Opportunity relationships
+Opportunity "0..*" -- "1" Organiser : < creates
+Volunteer "1" --- "0..*" OpportunityRegistry : connects to >
+OpportunityRegistry "0..*" -- "1" Opportunity : connects to >
 
-SMB -- Partnership : "Forms partnerships"
-SMB -- SMBAssociation : "Associates with volunteers"
-SMB -- Opportunity : "Posts opportunities"
-SMB -- DashboardData : "Views dashboard"
-SMB -- TechSpecialization : "Requires specialization"
 
-Charity -- Opportunity : "Creates opportunities"
-Charity -- TechNeed : "Has tech needs"
-Charity -- DashboardData : "Views dashboard"
-Charity -- TechSpecialization : "Requires specialization"
+' Opportunity Watchlist relationships
+Volunteer "1" -- "0..1" OpportunityWatchlist : has >
+OpportunityWatchlist "1" -- "0..*" OpportunityWatchlistEntry : contains >
+OpportunityWatchlistEntry "0..*" -- "1" Opportunity : references >
 
-Opportunity -- TechOpportunity : "Has tech aspects"
-Opportunity -- Skill : "Requires skills"
-Opportunity -- OpportunityRegistry : "Is registered"
-
-Partnership -- Technology : "Uses tech stack"
-Partnership -- TechSpecialization : "Focuses on tech areas"
-SMBAssociation -- Volunteer : "Engages volunteers"
-
-Notification -- User : "Alerts users"
-Ticket -- PageAdmin : "Managed by admins"
-
-TechSpecialization -- Skill : "Related to skills"
-TechCertification -- User : "Obtained by users"
 @enduml
