@@ -1,4 +1,6 @@
 @startuml
+title Volunteer Opportunity application
+
 actor Volunteer #lightgreen
 participant App
 participant "Authentication System" as Auth #pink

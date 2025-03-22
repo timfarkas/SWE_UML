@@ -1,4 +1,6 @@
 @startuml
+title App Deployment
+
 
 left to right direction
 
@@ -8,79 +10,104 @@ node "Client" {
     [Android App]
 }
 
-node "Cloud Infrastructure" {
-    node "Load Balancer" {
-        [NGINX / AWS ALB]
-    }
-    
-    node "Web Server" {
-        [Frontend (Next.js UI)]
+node "Render Hosting" {
+    node "App (Next.js)" {
+        [Frontend UI]
+        note right of [Frontend UI]
+          Chosen for:
+          - Server-side rendering
+          - Improved SEO capabilities
+          - Full-stack JavaScript framework
+        end note
+        
         [Chakra UI Components]
-        [Backend (Next.js Server)]
+        note right of [Chakra UI Components]
+          Chosen for:
+          - Simple set-up process
+          - Professional design for young urban audience
+          - Accessible component library
+        end note
+        
+        [Backend API]
     }
-    
     node "Backend Services" {
         [User Management Service]
         [Opportunity Management Service]
         [Skill Matching Engine]
-        [Watchlist & Notifications Service]
-    }
-    
-    node "Storage & CDN" {
-        [Cloudflare R2 Storage]
-        [CDN (Cloudflare, AWS CloudFront)]
+        [NotificationHandler]
     }
     
     database "Database Server" {
         [PostgreSQL Database]
         [Prisma ORM]
+        note right of [Prisma ORM]
+          Chosen for:
+          - Simple set-up process
+          - Easy-to-use queries
+          - Schema management GUI
+          - Type-safe database access
+        end note
     }
     
     node "Authentication Service" {
-        [Third-Party Verification API]
-        [2FA Service]
+        [Authentication System]
+        [CAPTCHA]
     }
     
     node "Email & Notification Service" {
         [SMTP Email Service]
         [Push Notification Service]
     }
+    node "Monitoring & Analytics" {
+        [Performance Monitoring]
+        [Error Tracking]
+        [Usage Analytics]
+    }
 }
+note bottom of "Render Hosting"
+    Chosen for:
+    - Simple set-up process
+    - Front-end focused full-stack support
+    - Low cost hosting solution
+    - Automatic scaling capabilities
+end note
 
-node "External Services" {
-    [DDOS Protection & Security Firewall]
-    [Hosting Provider (AWS, Azure, GCP)]
-    [GDPR Compliance Service]
+node "Storage & CDN" {
+    [Cloudflare R2 Storage] #LightBlue
+    note right of [Cloudflare R2 Storage]
+        Chosen for:
+        - Transparent & inexpensive pricing
+        - CDN & custom domain support
+        - High reliability
+    end note
+    [CDN (Cloudflare)]
 }
 
 ' Connections
-[Web Browser] --> [Frontend (Next.js UI)]
-[iOS App] --> [Frontend (Next.js UI)]
-[Android App] --> [Frontend (Next.js UI)]
+[Web Browser] --> [Frontend UI]
+[iOS App] --> [Frontend UI]
+[Android App] --> [Frontend UI]
 
-[Frontend (Next.js UI)] --> [Load Balancer]
-[Load Balancer] --> [Backend (Next.js Server)]
+[Backend API] --> [User Management Service]
+[Backend API] --> [Opportunity Management Service]
+[Backend API] --> [Skill Matching Engine]
+[Backend API] --> [NotificationHandler]
 
-[Backend (Next.js Server)] --> [User Management Service]
-[Backend (Next.js Server)] --> [Opportunity Management Service]
-[Backend (Next.js Server)] --> [Skill Matching Engine]
-[Backend (Next.js Server)] --> [Watchlist & Notifications Service]
+[Prisma ORM] --> [PostgreSQL Database]
 
-[User Management Service] --> [PostgreSQL Database]
-[Opportunity Management Service] --> [PostgreSQL Database]
-[Skill Matching Engine] --> [PostgreSQL Database]
-[Watchlist & Notifications Service] --> [PostgreSQL Database]
 
-[User Management Service] --> [Third-Party Verification API]
-[User Management Service] --> [2FA Service]
+[User Management Service] --> [Database Server]
+[Opportunity Management Service] --> [Database Server]
+[Skill Matching Engine] --> [Database Server]
+[NotificationHandler] --> [Database Server]
 
-[Watchlist & Notifications Service] --> [SMTP Email Service]
-[Watchlist & Notifications Service] --> [Push Notification Service]
+[User Management Service] --> [Authentication System]
+[User Management Service] --> [CAPTCHA]
 
-[Backend (Next.js Server)] --> [Cloudflare R2 Storage]
-[Cloudflare R2 Storage] --> [CDN (Cloudflare, AWS CloudFront)]
+[NotificationHandler] --> [SMTP Email Service]
+[NotificationHandler] --> [Push Notification Service]
 
-[Backend (Next.js Server)] --> [DDOS Protection & Security Firewall]
-[Backend (Next.js Server)] --> [GDPR Compliance Service]
+[Backend API] -l-> [Cloudflare R2 Storage]
+[Cloudflare R2 Storage] --> [CDN (Cloudflare)]
 
 @enduml

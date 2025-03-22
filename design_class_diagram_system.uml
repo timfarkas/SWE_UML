@@ -2,10 +2,10 @@
 title System Class Analysis
 
 abstract class User {
-    +userID
-    +username
-    +password
-    +email
+    +userID : int
+    +username : str
+    +password : str
+    +email : str
     +changePassword()
     +recoverPassword()
     +ban()
@@ -19,24 +19,23 @@ class PageAdmin {
 }
 
 
-User --|> PageAdmin
-User --|> Volunteer
-User --|> Organiser
+User <|-- PageAdmin
+User <|-- Volunteer
+User <|-- Organiser
 
 
 class Notification {
-    +notificationID
-    +message
-    +type
-    +timestamp
+    +notificationID : int
+    +message : str
+    +type : NotificationType
+    +timestamp : datetime
     +send()
 }
 
 class Chat {
-    +chatID
-    +participants
-    +creationDate
-    +isActive
+    +chatID : int
+    +participants : list[User]
+    +creationDate : datetime
     +sendMessage()
     +markAsRead()
     +addParticipant()
@@ -44,62 +43,82 @@ class Chat {
 }
 
 class Message {
-    +messageID
-    +content
-    +timestamp
-    +senderID
-    +isRead
-    +attachments
+    +messageID : int
+    +content : str 
+    +timestamp : datetime
+    +senderID : int
+    +isRead : bool
     +send()
     +markAsRead()
     +delete()
 }
 
 class Inbox {
-    +inboxID
-    +userID
-    +unreadCount
+    +inboxID : int
+    +userID : int
     +getChats()
     +getUnreadMessages()
     +markAllAsRead()
 }
 
-Chat "1" -- "0..*" Message : "contains >"
+Chat "1" -l- "0..*" Message : "contains >"
 User "1" -- "1" Inbox : "has >"
 Inbox "1" -- "0..*" Chat : "displays >"
 
 class Ticket {
-    +ticketID
-    +description
-    +status
-    +techRelated
+    +ticketID : int
+    +category : TicketCategory
+    +description : str
+    +urgencyLevel : int
+    +status : TicketStatus
     +submit()
+} 
+note right
+    Users may flag tickets as urgent 
+    if they deem it approporiate
+end note
+
+enum TicketCategory{
+    User Moderation
+    Content Moderation
+    Verification Issue
+    Bug Report
+    Performance Alerts
+    Integration Issue
+
 }
+
+enum TicketStatus {
+    Submitted
+    InReview
+    Closed
+}
+
+Ticket "0..*" -- "1" TicketStatus
+Ticket "0..*" -- "1" TicketCategory
+
 
 
 class Dashboard {
-    +userMetrics
+    +impactMetrics
     +activeOpportunities
     +completedOpportunities
-    +impactSummary
     +displayUserMetrics()
     +showActiveOpportunities()
     +showCompletedOpportunities()
     +displayImpactSummary()
     +refreshData()
 }
-note right
+note bottom
     Dashboard is populated dynamically 
     with active opportunities & stats
 end note
 
 class UserSession {
-    +sessionID
-    +startTime
-    +lastActiveTime
-    +ipAddress
-    +deviceInfo
-    +isActive
+    +sessionID : int
+    +startTime : datetime
+    +lastActiveTime : datetime
+    +isActive : bool
     +login()
     +logout()
     +validateSession()

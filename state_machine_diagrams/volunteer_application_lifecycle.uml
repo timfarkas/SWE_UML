@@ -1,4 +1,6 @@
 @startuml Volunteer Application State Machine
+title Volunteer Application Lifecycle
+
 [*] --> Drafted
 
 Drafted --> Pending : Submit application

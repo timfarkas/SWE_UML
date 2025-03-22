@@ -5,9 +5,13 @@ actor "Organiser" as User #orange
 participant "Frontend" as Frontend #lightgreen
 participant "Authentication System" as Auth #pink
 database "Database" as DB
-
 User -> Frontend: Access login page
 Frontend -> Auth: Forward login request
+Auth -> Frontend: Present CAPTCHA challenge
+Frontend -> User: Display CAPTCHA
+User -> Frontend: Complete CAPTCHA
+Frontend -> Auth: Submit CAPTCHA response
+Auth -> Auth: Verify CAPTCHA
 Auth -> DB: Check credentials
 
 alt Account exists

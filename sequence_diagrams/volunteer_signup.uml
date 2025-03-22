@@ -9,6 +9,12 @@ actor "Admin" as Admin
 
 User -> Frontend: Access login page
 Frontend -> Auth: Forward login request
+Auth -> Frontend: Present CAPTCHA challenge
+Frontend -> User: Display CAPTCHA
+User -> Frontend: Complete CAPTCHA
+Frontend -> Auth: Submit CAPTCHA response
+Auth -> Auth: Verify CAPTCHA
+
 Auth -> DB: Check credentials
 
 alt Account exists

@@ -2,7 +2,6 @@
 title Domain Class Analysis
 
 
-
 abstract class User {
 
 }
@@ -27,17 +26,19 @@ class Organiser {
     +deleteOpportunity()
 }
 
-class OrganiserInfo {
-}
-
-class Organiser {
-}
 
 class Opportunity {
     +opportunityID : int
     +title : str
     +status : str
     +opportunity details
+    create()
+    publish()
+    start()
+    close()
+    finish()
+    complete()
+    cancel()
 }
 
 enum OpportunityStatus {
@@ -62,20 +63,24 @@ enum Skill {
 
 class OpportunityRegistry {
     +registryID : id
-    +volunteerRating
-    +organiserRating
-    +skillsMatched
-    +skillGapScore
-    +connectVolunteerToOpportunity()
-    +calculateSkillMatch()
+    +opportunityRating : int
+    +organiserRating : int
+    +opportunityFeedback : str
+    +registerOpportunityFeedback()
     +registerSkillFeedback()
 }
 
 class SkillFeedback{
-
+    +feedbackID : int
+    +skillsAssessed : list[Skill]
+    +skillRatings : list[int]
+    +comments : str
+    +date : datetime
+    +updateRating()
+    +updateComments()
 }
 
-OpportunityRegistry "1" -r- "0..1" SkillFeedback :   "associates with >"
+OpportunityRegistry "1" -l- "0..1" SkillFeedback :   "associates with >"
 SkillFeedback "1" -- "1" VolunteerSkills : feedbacks > 
  
 enum OpportunityRegistryStatus {
@@ -109,9 +114,15 @@ class SMBAssociation {
 }
 
 class OpportunityWatchlist {
+    +watchlistID : int
+    +creationDate : datetime
+    addEntry()
+    removeEntry()
 }
 
 class OpportunityWatchlistEntry {
+    +entryID : int
+    +dateAdded : datetime
 }
 
 
@@ -124,10 +135,10 @@ class VolunteerSkills {
 
 TechSpecialization "1" -- "0..*" VolunteerSkills : "verifies >"
 
-User -d-|> Volunteer
-User -d-|> Organiser
+User <|-d- Volunteer
+User <|-d- Organiser
 
-Volunteer "1" -- "1" VolunteerInfo : "has >"
+
 Volunteer "1" -u-> "0..1" SMB : "registers >"
 Volunteer -- SkillMatchingEngine : "Matches skills"
 Opportunity ----- SkillMatchingEngine : "Matches skills"
@@ -144,7 +155,7 @@ VolunteerSkills "0..*" -- "1" Skill : "references >"
 
 Opportunity "0..*" -- "1" Organiser : "< creates"
 Opportunity "0..*" -- "1..*" Skill : "requires >"
-Opportunity -- OpportunityRegistry : "Is registered"
+
 
 OpportunityWatchlist "1" -- "0..*" OpportunityWatchlistEntry : "contains >"
 OpportunityWatchlistEntry "0..*" -- "1" Opportunity : "references >"

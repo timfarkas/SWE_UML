@@ -1,0 +1,25 @@
+@startuml Ticket Flow
+title Ticket Flow
+
+actor User
+participant App #lightgreen
+database Database
+participant "Notification Service" as Notify
+actor Admin
+
+User -> App: Submit ticket
+App -> Database: Save ticket
+App -> Notify: Request notification
+Notify -> Admin: Notify about new ticket
+Admin -> Admin: Review ticket
+note right of Admin
+  Admin can:
+  - Message associated users to clarify
+  - Message to warn user
+  - Ban user
+end note
+Admin -> App: Take action
+App -> Database: Update ticket status
+App -> User: Notify of action (if applicable)
+
+@enduml
