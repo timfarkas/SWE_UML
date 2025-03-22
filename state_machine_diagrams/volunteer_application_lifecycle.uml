@@ -1,15 +1,10 @@
 @startuml Volunteer Application State Machine
 [*] --> Drafted
 
-Drafted --> Submitted : Submit application
-Submitted --> UnderReview : Organizer reviews
-UnderReview -r-> Accepted : Application approved
-UnderReview --> NeedsMoreInfo : Request additional info
-UnderReview --> Declined : Application rejected
+Drafted --> Pending : Submit application
+Pending --> Active : Organizer gets notification with skill match 
 
-NeedsMoreInfo --> UnderReview : Information provided
 
-Accepted -r-> Active : Onboarding complete
 Active --> Completed : Opportunity finished
 Active --> Withdrawn : Volunteer withdraws
 Active --> Removed : Organizer removes
@@ -18,10 +13,9 @@ Withdrawn --> [*]
 Removed --> [*]
 Completed --> FeedbackPending : Awaiting feedback
 FeedbackPending --> Closed : Feedback submitted
-Declined --> Closed : Notifications sent
 Closed --> [*]
 
-state Submitted {
+state Pending {
   [*] --> AwaitingInitialReview
   AwaitingInitialReview -r-> SkillMatching : Initial review passed
   SkillMatching --> [*]

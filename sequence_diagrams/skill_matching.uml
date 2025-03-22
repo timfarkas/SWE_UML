@@ -3,10 +3,10 @@ title Skill Matching Process: Volunteer Assignment for Existing Opportunities
 
 
 actor "Volunteer" as Volunteer #lightgreen
-participant "App" as App #white
+participant "App" as App #lightgreen
 participant "SkillMatchingEngine" as MatchEngine #orange
-database "Database" as DB #gray
-actor "Organiser" as Organiser #lightblue
+database "Database" as DB
+actor "Organiser" as Organiser #orange
 
 ' Volunteer browses opportunity
 Volunteer -> App: Access platform

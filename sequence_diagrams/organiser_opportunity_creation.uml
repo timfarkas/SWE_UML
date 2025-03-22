@@ -2,9 +2,8 @@
 title Organiser Opportunity Creation
 actor Organiser #lightblue
 participant Frontend as App #lightgreen
-participant "Authentication Service" as Auth #pink
-participant "Opportunity Database" as OppDB
-participant "Skill Repository" as SkillRepo
+participant "Authentication System" as Auth #pink
+database "Database" as DB
 participant "Notification Service" as Notify
 
 Organiser -> App: Access platform
@@ -17,24 +16,19 @@ alt Authentication successful
     Organiser -> App: Select "Create New Opportunity"
     App --> Organiser: Display opportunity creation form
     
-    Organiser -> App: Enter opportunity details (title, description)
-    Organiser -> App: Specify location and duration
-    Organiser -> App: Select category and cause
+    Organiser -> App: Enter opportunity details (title, description, location, etc.)
     
-    App -> SkillRepo: Fetch available skills
-    SkillRepo --> App: Return skill options
+    App -> DB: Fetch available skills
+    DB --> App: Return skill options
     App --> Organiser: Display skill selection interface
     Organiser -> App: Select required skills
     
-    Organiser -> App: Set capacity and deadline
-    Organiser -> App: Define additional requirements
-    
     Organiser -> App: Submit opportunity
     
-    App -> OppDB: Store opportunity details
-    OppDB --> App: Confirm storage
+    App -> DB: Store opportunity data
+    DB --> App: Confirm
     
-    App -> Notify: Prepare notifications
+    App -> Notify: Prepare notifications 
     Notify -> Notify: Match opportunity with interested volunteers
     
     App --> Organiser: Display confirmation
@@ -43,9 +37,8 @@ alt Authentication successful
     note right of Organiser
       Opportunity management includes:
       - Edit details
-      - Review applications
+      - Contact applicants
       - Close opportunity
-      - Export volunteer list
     end note
     
 else Authentication failed

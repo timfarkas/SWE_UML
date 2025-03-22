@@ -1,11 +1,11 @@
 @startuml
 title SMB/Volunteer Signup & Authentication
 
-actor "SMB/Volunteer" as User #orange
+actor "SMB/Volunteer" as User #lightgreen
 participant "Front-end" as Frontend #lightgreen
 participant "Auth System" as Auth #pink
-participant "Database" as DB
-actor "Admin" as Admin
+database "Database" as DB
+actor "Admin" as Admin 
 
 User -> Frontend: Access login page
 Frontend -> Auth: Forward login request
