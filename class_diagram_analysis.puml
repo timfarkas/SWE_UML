@@ -13,6 +13,8 @@ class Volunteer {
     Single person, may be associated with SMB
 }
 
+
+
 class SMB {
     
 }
@@ -40,7 +42,7 @@ PageAdmin "0..*" --> "0..*" Ticket : resolves >
 
 ' User details related classes
 class VolunteerInfo {
-    tracks interests, qualifications & impact
+    connects to Linkedin Profile, tracks interests, qualifications & impact, given feedback after each 
 }
 
 class SMBInfo {
@@ -114,5 +116,37 @@ Volunteer "1" -- "0..1" CharityWatchlist : has >
 SMB "1" --- "0..1" CharityWatchlist : has >
 CharityWatchlist "1" -- "0..*" CharityWatchlistEntry : contains >
 CharityWatchlistEntry "0..*" -- "1" Charity : references >
+
+
+' Replace the existing Notification class and relationships with
+' a comprehensive messaging system aligned with Design_Class_Diagram
+
+class Message {
+    Communication between users or system-generated
+    Replaces previous Notification concept
+}
+
+enum MessageType {
+    DIRECT_MESSAGE
+    GROUP_MESSAGE 
+    OPPORTUNITY_RELATED
+    PARTNERSHIP_RELATED
+    TECHNICAL_SUPPORT
+    SYSTEM_NOTIFICATION
+    ALERT
+    REMINDER
+    STATUS_UPDATE
+}
+
+class Conversation {
+    Collection of related messages between participants
+}
+
+' Message relationships
+Message "0..*" --> "1" User : sender >
+Message "0..*" --> "0..*" User : recipients >
+Message "0..*" -- "1" MessageType : type >
+Conversation "1" -- "0..*" Message : contains >
+User "0..*" -- "0..*" Conversation : participates in >
 
 @enduml
