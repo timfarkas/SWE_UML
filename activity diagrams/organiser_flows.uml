@@ -10,36 +10,35 @@ fork
     :Opportunity Creation Flow;
 fork again 
     :View impact metrics;
+fork again
+    :Open Messages;
+    :Open Chat;
+    :Chat;
+    detach
 fork again 
     :View created opportunities;
-    split
-        :Click on opportunity;
-            split 
-                :Edit information;
-                :Publish changes;
-            split again
-                :Back;
-            end split
-    split again
-        :Back;
-    end split
-fork again 
-    :View associated volunteers;
-     split 
-        :Click on volunteer;
-            split 
-                :Open chat;
-                :Chat;
-                detach
-            split again
-                :Submit volunteer review;
-            split again 
-                :Remove from opportunity;
-            end split
-    split again
-        :Back;
-    end split
-end merge
+    :Click on opportunity;
+        split 
+            :Edit information;
+            :Publish changes;
+        split again
+            :View associated volunteers; 
+            :Click on volunteer;
+                split 
+                    :Open chat;
+                    :Chat;
+                    detach
+                split again
+                    :Submit volunteer feedback;
+                split again 
+                    :Remove from opportunity;
+                end split
+        split again
+            :Close opportunity;
+        end split
+fork again
+    :Submit ticket;
+end merge 
 endwhile
 -[hidden]->
 detach

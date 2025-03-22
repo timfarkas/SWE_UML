@@ -4,7 +4,7 @@ title Organiser Signup & Authentication
 actor "Organiser" as User #orange
 participant "Frontend" as Frontend #lightgreen
 participant "Authentication System" as Auth #pink
-participant "Database" as DB
+database "Database" as DB
 
 User -> Frontend: Access login page
 Frontend -> Auth: Forward login request

@@ -8,44 +8,34 @@ while (Volunteer dashboard)
 fork
     :Browse opportunities;
     split 
+        :View Opportunity;
         :Apply for Opportunity;
     split again
         :Add Opportunity to Watchlist;
-    split again
-        :Back;
     end split
 fork again
-    :View my applications;
+    :Click on active opportunity;
     split
-        :Click on application;
-        split
-            :View status;
-        split again
-            :Withdraw application;
-        split again
-            :Contact organiser;
-            :Chat;
-            detach
-        end split
+        :View status & information;
     split again
-        :Back;
+        :Withdraw from opportunity;
+    split again
+        :Contact organiser;
+        :Chat;
+        detach
     end split
 fork again
     :View my watchlist;
+    :Click on saved opportunity;
     split
-        :Click on saved opportunity;
-        split
-            :Apply for opportunity;
-        split again
-            :Remove from watchlist;
-        split again
-            :Back;
-        end split
+        :Apply for opportunity;
     split again
-        :Back;
+        :Remove from watchlist;
     end split
 fork again
     :View impact metrics;
+fork again
+    :Submit ticket;
 end merge
 endwhile
 -[hidden]->

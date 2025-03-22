@@ -1,9 +1,9 @@
 @startuml
-actor Volunteer
+actor Volunteer #lightgreen
 participant App
-participant "Authentication Service" as Auth
-participant "Skill Matching Engine" as SkillMatch
-actor Organiser
+participant "Authentication System" as Auth #pink
+participant "Skill Matching Engine" as SkillMatch #orange
+actor Organiser #orange 
 
 Volunteer -> App: Access platform
 App -> Auth: Authenticate volunteer
@@ -16,29 +16,28 @@ alt Authentication successful
     Volunteer -> App: Apply filters (location, category, availability)
     Volunteer -> App: Select opportunity
     
-    App -> SkillMatch: Check eligibility
-    SkillMatch --> App: Eligibility result
+    Volunteer -> App: Apply to opportunity
+    Volunteer -> App: Enter optional information
+    App -> App: Store application as "Active"
     
-    alt Match found
-        App --> Volunteer: Confirm eligibility
-        Volunteer -> App: Apply to opportunity
-        Volunteer -> App: Enter optional information
-        App -> App: Store application
-        App -> Organiser: Inform about application
-        
-        Organiser -> Organiser: Evaluate match
-        Organiser -> App: Make approval decision
-        
-        alt Approved
-            App --> Volunteer: Inform of approval
-            App --> Volunteer: Display next steps
-            Volunteer -> Organiser: Attend opportunity
-            Organiser -> App: Confirm attendance
-        else Not approved
-            App --> Volunteer: Inform of rejection
-        end
-    else No match found
-        App --> Volunteer: Display eligibility failure message
+    App -> SkillMatch: Request skill match analysis
+    SkillMatch -> SkillMatch: Calculate compatibility score
+    SkillMatch -> SkillMatch: Generate match report
+    SkillMatch --> App: Return match assessment
+    
+    App -> Organiser: Notify about new volunteer with match details
+    App --> Volunteer: Inform application is active
+    App --> Volunteer: Display next steps
+    
+    Organiser -> App: Open chat with volunteer
+    Volunteer <-> Organiser: Discuss opportunity details
+    
+    alt Proceed with volunteer
+        Volunteer -> Organiser: Attend opportunity
+        Organiser -> App: Confirm attendance
+    else Volunteer not suitable
+        Organiser -> App: Remove volunteer
+        App --> Volunteer: Inform of removal
     end
 else Authentication failed
     App --> Volunteer: Show login error
