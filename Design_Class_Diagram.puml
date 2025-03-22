@@ -6,12 +6,18 @@ abstract class User {
   -password: string
   -email: string
   -technicalSkills: List<Skill>
+  -linkedInProfileURL: string
+  -linkedInConnected: boolean
+  -linkedInAccessToken: string
   +login(): bool
   +changePassword(newPassword: string): void
   +recoverPassword(): void
   +register(type: string): void
   +addSkill(skill: Skill): void
   +removeSkill(skill: Skill): void
+  +connectLinkedInProfile(): boolean
+  +disconnectLinkedInProfile(): void
+  +importSkillsFromLinkedIn(): List<Skill>
 }
 
 class Volunteer {
@@ -63,11 +69,33 @@ class PageAdmin {
 }
 
 class VolunteerInfo {
-  -interests: string
-  -qualifications: string
+  -interests: List<string>
+  -qualifications: List<string>
   -impactHistory: string
   -techSpecializations: List<TechSpecialization>
   -certifications: List<TechCertification>
+  -pastEventsFeedback: List<EventFeedback>
+  -performanceRatings: Map<Opportunity, float>
+  +addInterest(interest: string): void
+  +addQualification(qualification: string): void
+  +updateImpactHistory(impact: string): void
+  +addTechSpecialization(specialization: TechSpecialization): void
+  +addCertification(certification: TechCertification): void
+  +addEventFeedback(feedback: EventFeedback): void
+  +getAverageRating(): float
+  +getRecentFeedback(count: int): List<EventFeedback>
+}
+
+class EventFeedback {
+  -feedbackID: int
+  -opportunity: Opportunity
+  -rating: float
+  -comments: string
+  -date: datetime
+  -skillsUsed: List<Skill>
+  -areaForImprovement: string
+  +updateRating(rating: float): void
+  +updateComments(comments: string): void
 }
 
 class SMBInfo {
@@ -261,6 +289,43 @@ class DashboardData {
   +generateReport(): void
 }
 
+class Message {
+  -messageID: int
+  -content: string
+  -timestamp: datetime
+  -isRead: boolean
+  -attachments: List<String>
+  -sender: User
+  -recipients: List<User>
+  -isSystemGenerated: boolean
+  +markAsRead(): void
+  +addAttachment(url: string): void
+  +send(): void
+}
+
+enum MessageType {
+  DIRECT_MESSAGE
+  GROUP_MESSAGE
+  OPPORTUNITY_RELATED
+  PARTNERSHIP_RELATED
+  TECHNICAL_SUPPORT
+  SYSTEM_NOTIFICATION
+  ALERT
+  REMINDER
+  STATUS_UPDATE
+}
+
+class Conversation {
+  -conversationID: int
+  -title: string
+  -lastActivityTimestamp: datetime
+  -participants: List<User>
+  +addMessage(message: Message): void
+  +addParticipant(user: User): void
+  +removeParticipant(user: User): void
+  +getMessageHistory(): List<Message>
+}
+
 ' Inheritance relationships
 User <|-r- Volunteer
 User <|-r- SMB
@@ -342,5 +407,271 @@ class Level {
 
 ' Connect TechNeeds with Technology
 TechNeed "0..*" -- "0..*" Technology : requires >
+
+' Relationships
+User "1" -- "0..*" Message : sends >
+User "0..*" -- "0..*" Message : receives >
+Message "0..*" -- "1" MessageType : has type >
+Conversation "1" -- "0..*" Message : contains >
+User "0..*" -- "0..*" Conversation : participates in >
+
+' Add relationship between VolunteerInfo and EventFeedback
+VolunteerInfo "1" -- "0..*" EventFeedback : contains >
+
+@enduml
+
+@startuml
+title Volunteer Flows
+start
+:Volunteer accesses platform;
+:Authenticate via Authentication Service;
+while (Volunteer dashboard)
+
+fork
+    :Browse opportunities;
+    split 
+        :View Opportunity;
+        :Apply for Opportunity;
+    split again
+        :Add Opportunity to Watchlist;
+    end split
+fork again
+    :Manage LinkedIn Profile;
+    split
+        :Connect LinkedIn Account;
+    split again
+        :Import Skills from LinkedIn;
+    split again
+        :Disconnect LinkedIn;
+    end split
+fork again
+    :Open Messages;
+    split
+        :View received messages;
+    split again
+        :Send new message;
+    split again
+        :Reply to conversation;
+    end split
+fork again
+    :Click on active opportunity;
+    split
+        :View status & information;
+    split again
+        :Withdraw from opportunity;
+    split again
+        :Contact organiser;
+        :Chat;
+        detach
+    split again
+        :Submit feedback;
+    end split
+fork again
+    :View my watchlist;
+    :Click on saved opportunity;
+    split
+        :Apply for opportunity;
+    split again
+        :Remove from watchlist;
+    end split
+fork again
+    :View impact metrics;
+fork again
+    :Submit ticket;
+end merge
+endwhile
+-[hidden]->
+detach
+
+@enduml
+
+@startuml
+title Organiser Flows
+start
+:Organiser accesses platform;
+:Authenticate via Authentication Service;
+while (Organiser dashboard)
+
+fork
+    :Create opportunity;
+    :Opportunity Creation Flow;
+fork again 
+    :View impact metrics;
+fork again
+    :Open Messages;
+    split
+        :View all conversations;
+    split again
+        :Start new conversation;
+    split again
+        :Reply to messages;
+    end split
+    :Chat;
+    detach
+fork again 
+    :View created opportunities;
+    :Click on opportunity;
+        split 
+            :Edit information;
+            :Publish changes;
+        split again
+            :Send notifications to interested volunteers;
+        split again
+            :View associated volunteers; 
+            :Click on volunteer;
+                split 
+                    :Open chat;
+                    :Chat;
+                    detach
+                split again
+                    :Submit volunteer feedback;
+                    :Endorse volunteer skills;
+                split again 
+                    :Remove from opportunity;
+                end split
+        split again
+            :Request LinkedIn validation for skills;
+        split again
+            :Close opportunity;
+            :Initiate feedback collection;
+        end split
+fork again
+    :Submit ticket;
+end merge 
+endwhile
+-[hidden]->
+detach
+
+@enduml
+
+@startuml
+# Existing content...
+
+# Add after account creation:
+User -> Frontend: Connect LinkedIn Account
+Frontend -> Auth: Request LinkedIn connection
+Auth -> Auth: Generate OAuth request
+Auth --> User: Redirect to LinkedIn consent
+User -> Auth: Authorize connection
+Auth -> DB: Store LinkedIn credentials
+Auth -> Auth: Import LinkedIn skills
+Auth -> DB: Store imported skills
+Auth --> Frontend: LinkedIn connected successfully
+Frontend --> User: Display imported skills
+Frontend --> User: Enable notifications
+User -> Frontend: Configure notification preferences
+Frontend -> DB: Store notification settings
+
+@enduml
+
+@startuml
+# Include existing content...
+
+# Add messaging between volunteer and organizer:
+Volunteer -> App: Open conversation with organizer
+App -> App: Create new conversation
+App -> Organiser: Add to conversation
+Volunteer -> App: Send message
+App -> Organiser: Deliver message notification
+Organiser -> App: View message
+Organiser -> App: Reply to volunteer
+App -> Volunteer: Deliver message notification
+
+# Add LinkedIn validation:
+App -> SkillMatch: Validate LinkedIn skills
+SkillMatch -> SkillMatch: Compare LinkedIn skills with requirements
+SkillMatch --> App: Return LinkedIn validation score
+
+# Add feedback handling:
+Organiser -> App: Request feedback after completion
+App -> Volunteer: Send feedback request notification
+Volunteer -> App: Submit feedback on opportunity
+App -> Organiser: Send feedback notification
+Organiser -> App: Submit feedback on volunteer
+App -> Volunteer: Send skill endorsement notification
+
+@enduml
+
+@startuml 
+title Opportunity Lifecycle
+[*] --> Draft
+Draft --> Published : Organiser publishes Opportunity
+Published --> Closed : Deadline passed/\nManually closed
+Published --> InProgress : Volunteers assigned
+InProgress --> FeedbackCollection : Work finished
+InProgress --> Cancelled : Cancelled by Organiser
+FeedbackCollection --> Completed
+Completed --> [*]
+Cancelled --> [*]
+Closed --> [*]
+
+state Draft {
+  [*] --> BasicInfo : Add basic info
+  BasicInfo -r-> SkillsRequired : Add skills
+  SkillsRequired -r> ReviewDraft : Complete
+  ReviewDraft --> [*] : Confirm
+}
+
+state Published {
+  [*] --> NotificationsSent
+  NotificationsSent --> AwaitingApplications
+  AwaitingApplications --> [*]
+}
+
+state InProgress {
+  [*] --> VolunteersOnboarding
+  VolunteersOnboarding --> ActiveWork
+  ActiveWork --> [*]
+}
+
+state FeedbackCollection {
+  [*] --> VolunteerFeedback : Collect feedback from volunteers
+  VolunteerFeedback -r-> OrganizerFeedback : Collect feedback from organizers
+  OrganizerFeedback -r-> ImpactMeasurement : Collect impact evaluation
+  ImpactMeasurement --> SkillEndorsements : Process skill endorsements
+  SkillEndorsements --> [*]
+}
+
+state Completed
+
+@enduml
+
+@startuml Volunteer Application State Machine
+[*] --> Drafted
+
+Drafted --> Pending : Submit application
+Pending --> Active : Organizer gets notification with skill match 
+
+Active --> Completed : Opportunity finished
+Active --> Withdrawn : Volunteer withdraws
+Active --> Removed : Organizer removes
+
+Withdrawn --> [*]
+Removed --> [*]
+Completed --> FeedbackPending : Awaiting feedback
+FeedbackPending --> Closed : Feedback submitted
+Closed --> [*]
+
+state Pending {
+  [*] --> AwaitingInitialReview
+  AwaitingInitialReview --> LinkedInVerification : Initial review passed
+  LinkedInVerification --> SkillMatching : LinkedIn profile validated
+  SkillMatching --> [*]
+}
+
+state Active {
+  [*] --> Onboarding
+  Onboarding -r-> InProgress : Onboarding completed
+  InProgress -r-> FinalStage : Near completion
+  FinalStage --> [*]
+}
+
+state Completed {
+  [*] --> ImpactRecording
+  ImpactRecording -r-> VolunteerFeedback : Impact recorded
+  VolunteerFeedback --> OrganizerFeedback : Volunteer submits feedback
+  OrganizerFeedback --> SkillsEndorsement : Organizer submits feedback
+  SkillsEndorsement --> [*] : Skills endorsed
+}
 
 @enduml
