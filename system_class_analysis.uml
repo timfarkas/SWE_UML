@@ -1,0 +1,121 @@
+@startuml
+title System Class Analysis
+
+abstract class User {
+    +userID
+    +username
+    +password
+    +email
+    +changePassword()
+    +recoverPassword()
+    +ban()
+}
+
+
+class PageAdmin {
+    +resolveTicket()
+    +manageSystem()
+    +manageTechCategories()
+}
+
+
+User --|> PageAdmin
+User --|> Volunteer
+User --|> Organiser
+
+
+class Notification {
+    +notificationID
+    +message
+    +type
+    +timestamp
+    +send()
+}
+
+class Chat {
+    +chatID
+    +participants
+    +creationDate
+    +isActive
+    +sendMessage()
+    +markAsRead()
+    +addParticipant()
+    +removeParticipant()
+}
+
+class Message {
+    +messageID
+    +content
+    +timestamp
+    +senderID
+    +isRead
+    +attachments
+    +send()
+    +markAsRead()
+    +delete()
+}
+
+class Inbox {
+    +inboxID
+    +userID
+    +unreadCount
+    +getChats()
+    +getUnreadMessages()
+    +markAllAsRead()
+}
+
+Chat "1" -- "0..*" Message : "contains >"
+User "1" -- "1" Inbox : "has >"
+Inbox "1" -- "0..*" Chat : "displays >"
+
+class Ticket {
+    +ticketID
+    +description
+    +status
+    +techRelated
+    +submit()
+}
+
+
+class Dashboard {
+    +userMetrics
+    +activeOpportunities
+    +completedOpportunities
+    +impactSummary
+    +displayUserMetrics()
+    +showActiveOpportunities()
+    +showCompletedOpportunities()
+    +displayImpactSummary()
+    +refreshData()
+}
+note right
+    Dashboard is populated dynamically 
+    with active opportunities & stats
+end note
+
+class UserSession {
+    +sessionID
+    +startTime
+    +lastActiveTime
+    +ipAddress
+    +deviceInfo
+    +isActive
+    +login()
+    +logout()
+    +validateSession()
+    +refreshSession()
+    +trackActivity()
+}
+
+User "1" -- "0..*" UserSession : "maintains >"
+
+User "1" -- "1" Dashboard : "views >"
+
+Ticket "0..*" <- "0..*" User : "< submits"
+Ticket -- PageAdmin : "Managed by admins"
+PageAdmin "0..*" --> "0..*" Ticket : "resolves >"
+
+Notification -- User : "Alerts users"
+
+
+@enduml

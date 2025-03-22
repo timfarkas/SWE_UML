@@ -1,0 +1,165 @@
+@startuml
+
+' Core User-related classes
+abstract class User {
+
+}
+
+class Volunteer {
+    +volunteerID
+    +historyOfHelp
+    +impactMetrics
+    +skillLevels
+    +yearsExperience
+    +requestSignUpForOpportunity()
+    +cancelVolunteering()
+    +uploadHistory()
+    +viewDashboard()
+    +updateSkillLevel()
+}
+
+class SMB {
+    +smbID
+    +verificationStatus
+    +companyRegistrationNumber
+    +requiredSkills
+    +techStack
+    +manageAssociations()
+    +viewDashboard()
+}
+
+class Organiser {
+    +OrganiserID
+    +verificationStatus
+    +OrganiserLicenseNumber
+    +techNeeds
+    +createOpportunity()
+    +editOpportunity()
+    +deleteOpportunity()
+    +acceptVolunteerRequest()
+    +declineVolunteerRequest()
+    +cancelVolunteerAid()
+    +viewDashboard()
+}
+
+class VolunteerInfo {
+    +interests
+}
+
+
+class OrganiserInfo {
+}
+
+class Organiser {
+}
+
+class Opportunity {
+    +opportunityID
+    +title
+    +description
+    +date
+    +location
+    +status
+    +requiredTechSkills
+    +skillLevel
+    +duration
+    +projectType
+    +remoteOption
+}
+
+class Skill {
+    +skillID
+    +name
+    +category
+    +description
+}
+
+
+class OpportunityRegistry {
+    +registryID
+    +rating
+    +skillsMatched
+    +skillGapScore
+    +connectVolunteerToOpportunity()
+    +calculateSkillMatch()
+}
+
+class SkillMatchingEngine {
+    +findMatchingOpportunities()
+    +findQualifiedVolunteers()
+    +calculateMatchScore()
+}
+
+class TechSpecialization {
+    +specializationID
+    +area
+    +description
+    +relatedSkills
+}
+
+class TechCertification {
+    +certificationID
+    +name
+    +issuer
+    +dateObtained
+    +expiryDate
+    +verificationURL
+}
+
+
+class SMBAssociation {
+    +associationID
+    +startDate
+    +skillContribution
+    +addVolunteer()
+    +removeVolunteer()
+}
+
+
+
+class OpportunityWatchlist {
+}
+
+class OpportunityWatchlistEntry {
+}
+User -d-|> Volunteer
+User -d-|> Organiser
+
+Volunteer "1" -- "1" VolunteerInfo : "has >"
+Volunteer "1" -u-> "0..1" SMB : "registers >"
+Volunteer -- OpportunityRegistry : "Tracks participation"
+Volunteer -- SkillMatchingEngine : "Matches skills"
+Volunteer -- TechSpecialization : "Focuses on specialization"
+Volunteer -- TechCertification : "Earns certifications"
+Volunteer "1" -- "0..1" OpportunityWatchlist : "has >"
+
+Opportunity -- SkillMatchingEngine 
+SkillMatchingEngine -- Skill : ""
+
+SMB "1" -- "1" SMBInfo : "has >"
+SMB -- SMBAssociation : "Associates with volunteers"
+SMB -- Opportunity : "Posts opportunities"
+SMB -- TechSpecialization : "Requires specialization"
+
+Organiser "1" -- "1" OrganiserInfo : "has >"
+
+Organiser -- Opportunity : "Creates opportunities"
+Organiser -- TechSpecialization : "Requires specialization"
+
+Opportunity "0..*" -- "1" Organiser : "< creates"
+Opportunity -- Skill : "Requires skills"
+Opportunity -- OpportunityRegistry : "Is registered"
+
+OpportunityWatchlist "1" -- "0..*" OpportunityWatchlistEntry : "contains >"
+OpportunityWatchlistEntry "0..*" -- "1" Opportunity : "references >"
+
+SMBAssociation "0..*" -- "1" SMB : "owned by >"
+SMBAssociation "1" -- "0..*" Volunteer : "includes >"
+SMBAssociation -- Volunteer : "Engages volunteers"
+
+TechSpecialization -- Skill : "Related to skills"
+TechCertification -- User : "Obtained by users"
+
+Volunteer "1" --- "0..*" OpportunityRegistry : "connects to >"
+OpportunityRegistry "0..*" -- "1" Opportunity : "connects to >"
+@enduml
